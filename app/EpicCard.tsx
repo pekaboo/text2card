@@ -151,6 +151,21 @@ const EpicCard: React.FC = () => {
     const handleClear = () => {
         setText('');
     };
+    const handleMyCopy = () => {  
+        // setText('');
+        // 复制文字刀剪贴板
+        
+        // 获取当前domain值 
+        let content = encodeURIComponent(text);
+        const domain = window.location.protocol+"/api/card?text="+content+"&width=600&height=400";
+        // navigator.clipboard.writeText(domain).then(() => {
+        //     alert('Text copied to clipboard');
+        // }).catch(err => {
+        //     console.error('Copy failed:', err);
+        //     alert('Copy failed, please try again');
+        // });
+        window.open(domain);
+    };
 
     const handleRandomLayout = () => {
         setRandomLayout(prev => !prev);
@@ -192,6 +207,12 @@ const EpicCard: React.FC = () => {
                             className="huiwen-font bg-red-500 text-white hover:bg-red-600 rounded-xl text-sm md:text-base py-3 px-6 transition-colors duration-200"
                         >
                             <Trash2 className="mr-2 h-5 w-5" /> Clear
+                        </Button>
+                        <Button
+                            onClick={handleMyCopy}
+                            className="huiwen-font bg-green-500 text-white hover:bg-green-600 rounded-xl text-sm md:text-base py-3 px-6 transition-colors duration-200"
+                        >
+                            <Copy className="mr-2 h-5 w-5" /> Copy URL
                         </Button>
                     </div>
                     <Button

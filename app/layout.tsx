@@ -3,6 +3,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import React from "react";
 import GoogleAnalytics from "../lib/goolge-analytics";
+import FootScript from "../lib/foot-script";
 
 export const metadata: Metadata = {
     title: 'EpicCard Generator',
@@ -15,9 +16,10 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <html lang="en">
-        <body>{children}</body>
+        <html lang="en">      
+        <body>{children}</body> 
         <GoogleAnalytics/>
+        <FootScript/>
         </html>
     )
 }

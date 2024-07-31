@@ -152,12 +152,14 @@ const EpicCard: React.FC = () => {
         setText('');
     };
     const handleMyCopy = () => {  
-        // setText('');
-        // 复制文字刀剪贴板
-        
+        // 获取 canvasRef 的长宽
+        const canvas = canvasRef.current;
+        const width = canvas?.clientWidth;
+        const height = canvas?.clientHeight;
         // 获取当前domain值 
         let content = encodeURIComponent(text);
-        const domain = window.location.protocol+"/api/card?text="+content+"&width=600&height=400";
+        // const domain = window.location.protocol+"/api/card?text="+content+"&width=600&height=400";
+        const domain = window.location.protocol+"/api/card?text="+content+"&width="+width;
         // navigator.clipboard.writeText(domain).then(() => {
         //     alert('Text copied to clipboard');
         // }).catch(err => {

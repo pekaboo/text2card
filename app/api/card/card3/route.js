@@ -22,78 +22,107 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
   context.fillText(line, x, y);
 }
 
+// demo
+// http://localhost:3000/api/card/card3?cover=https://p2.music.126.net/nNg4YjkcK1AwCX1FrN8VOQ==/109951166578333625.jpg&comment=我给她梳过头发，洗过澡，穿过衣服做过饭，亲她掉下来的眼泪，吃她剩下来的东西，她邹下眉头我都会紧张，我们吵过架，但是我都会放下所有的情绪去哄她，冬天冷了我会握住她的手，生病了我会喂她吃药，哄她睡觉，什么时候都是让着她，我很清楚一个女孩爱的样子。所以我依然很清楚的记得她背叛我的样子&name=Cheng橙zzzz&album=你走（完整版）
+  
 export async function GET(req) {
+  const { searchParams } = new URL(req.url);
+  const cover = searchParams.get("cover") || "";
+  const comment = searchParams.get("comment") || "";
+  const name = searchParams.get("name") || "";
+  const album = searchParams.get("album") || "";
+  const ignore = searchParams.get("ignore") || "";
+  const api = searchParams.get("api") || "";
+
   let renderData = null;
-  // 获取请求数据  https://moyu-server.wangyitu.tech/api/proxy?url=https://tenapi.cn/v2/comment
-  // 发送 GET 请求
-  await axios
-    .get(
-      "https://moyu-server.wangyitu.tech/api/proxy?url=https://tenapi.cn/v2/comment?t=" +
-        new Date().getTime()
-    )
-    // await axios.get('https://tenapi.cn/v2/comment')
-    .then((response) => {
-      renderData = response.data["apiData"]["data"];
+  if (!cover || !comment || !name || !album) {
+    if(!api){
+      return new Response(JSON.stringify({ 
+         'demo1':"/api/card/card3?cover=https://p2.music.126.net/nNg4YjkcK1AwCX1FrN8VOQ==/109951166578333625.jpg&comment=我给她梳过头发，洗过澡，穿过衣服做过饭，亲她掉下来的眼泪，吃她剩下来的东西，她邹下眉头我都会紧张，我们吵过架，但是我都会放下所有的情绪去哄她，冬天冷了我会握住她的手，生病了我会喂她吃药，哄她睡觉，什么时候都是让着她，我很清楚一个女孩爱的样子。所以我依然很清楚的记得她背叛我的样子&name=Cheng橙zzzz&album=你走（完整版）"
+         ,'demo2':"/api/card/card3?api=-"
+       }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }); 
+    }
+    // 获取请求数据  https://moyu-server.wangyitu.tech/api/proxy?url=https://tenapi.cn/v2/comment
+    // 发送 GET 请求
+    await axios
+      .get(
+        "https://moyu-server.wangyitu.tech/api/proxy?url=https://tenapi.cn/v2/comment?t=" +
+          new Date().getTime()
+      )
+      // await axios.get('https://tenapi.cn/v2/comment')
+      .then((response) => {
+        renderData = response.data["apiData"]["data"];
+      })
+      .catch((error) => {
+        renderData = {
+          id: "1460656959",
+          songs: "你走",
+          sings: "Cheng橙zzzz",
+          album: "你走（完整版）",
+          cover:
+            "https://p2.music.126.net/nNg4YjkcK1AwCX1FrN8VOQ==/109951166578333625.jpg",
+          url: "https://music.163.com/song/media/outer/url?id=1460656959.mp3",
+          name: "Cheng橙zzzz",
+          comment:
+            "我给她梳过头发，洗过澡，穿过衣服做过饭，亲她掉下来的眼泪，吃她剩下来的东西，她邹下眉头我都会紧张，我们吵过架，但是我都会放下所有的情绪去哄她，冬天冷了我会握住她的手，生病了我会喂她吃药，哄她睡觉，什么时候都是让着她，我很清楚一个女孩爱的样子。所以我依然很清楚的记得她背叛我的样子",
+        };
+      });
+    if (!renderData) {
+      return new Response(JSON.stringify({ error: "请求数据失败" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    console.log(renderData);
+
+    // 发送 POST 请求 保存到 Notion 数据库
+    axios({
+      method: "post",
+      url: "https://moyu.wangyitu.tech/api/notion/db",
+      headers: {
+        "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify({
+        databaseId: "abfb62478fc2435797ffa9c2ee27a0b4",
+        model: {
+          id: "title",
+          sings: "rich_text",
+          album: "rich_text",
+          cover: "rich_text",
+          url: "rich_text",
+          name: "rich_text",
+          comment: "rich_text",
+        },
+        type: "add",
+        data: {
+          id: renderData["id"],
+          sings: renderData["sings"],
+          album: renderData["album"],
+          cover: renderData["cover"],
+          url: renderData["url"],
+          name: renderData["name"],
+          comment: renderData["comment"],
+        },
+      }),
     })
-    .catch((error) => {
-      renderData = {
-        id: "1460656959",
-        songs: "你走",
-        sings: "Cheng橙zzzz",
-        album: "你走（完整版）",
-        cover:
-          "https://p2.music.126.net/nNg4YjkcK1AwCX1FrN8VOQ==/109951166578333625.jpg",
-        url: "https://music.163.com/song/media/outer/url?id=1460656959.mp3",
-        name: "Cheng橙zzzz",
-        comment:
-          "我给她梳过头发，洗过澡，穿过衣服做过饭，亲她掉下来的眼泪，吃她剩下来的东西，她邹下眉头我都会紧张，我们吵过架，但是我都会放下所有的情绪去哄她，冬天冷了我会握住她的手，生病了我会喂她吃药，哄她睡觉，什么时候都是让着她，我很清楚一个女孩爱的样子。所以我依然很清楚的记得她背叛我的样子",
-      };
-    });
-  if (!renderData) {
-    return new Response(JSON.stringify({ error: "请求数据失败" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  } else {
+    renderData = {
+      cover: cover,
+      comment: comment,
+      name: name,
+      album: album,
+    };
   }
-  console.log(renderData);
-
-  axios({
-    method: "post",
-    url: "https://moyu.wangyitu.tech/api/notion/db",
-    headers: {
-      "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
-      "Content-Type": "application/json",
-    },
-    data: JSON.stringify({
-      databaseId: "abfb62478fc2435797ffa9c2ee27a0b4",
-      model: {
-        id: "title", 
-        sings: "rich_text",
-        album: "rich_text",
-        cover: "rich_text",
-        url: "rich_text",
-        name: "rich_text",
-        comment: "rich_text",
-      },
-      type: "add",
-      data: {
-        id:renderData['id'], 
-        sings:renderData['sings'],
-        album:renderData['album'],
-        cover:renderData['cover'],
-        url:renderData['url'],
-        name:renderData['name'],
-        comment:renderData['comment'],
-      },
-    }),
-  })
-    .then(function (response) {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-
   const width = 400;
   // const height = 800;
   // 创建专辑封面图像
@@ -183,13 +212,14 @@ export async function GET(req) {
   ctx.font = "14px Arial";
   ctx.textAlign = "right";
   ctx.fillText("来自 @" + renderData["name"], canvas.width - 10, textY + 100); // x 坐标为 canvas.width - 10
-  ctx.fillText(
-    "在「" + renderData["album"] + "」",
-    canvas.width - 10,
-    textY + 120
-  );
-  ctx.fillText("歌曲下方的评论", canvas.width - 10, textY + 140);
-
+  if(!ignore){
+    ctx.fillText(
+      "在「" + renderData["album"] + "」",
+      canvas.width - 10,
+      textY + 120
+    );
+    ctx.fillText("歌曲下方的评论", canvas.width - 10, textY + 140); 
+  } 
   // 生成图片的二进制流
   const buffer = canvas.toBuffer("image/png");
 

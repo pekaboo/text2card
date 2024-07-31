@@ -49,7 +49,14 @@ const EpicCard: React.FC = () => {
 
         const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const l = pixels.data.length;
-        const bound = {
+        interface Bound {
+            top: number | null;
+            left: number | null;
+            right: number | null;
+            bottom: number | null;
+        }
+        
+        const bound: Bound = {
             top: null,
             left: null,
             right: null,

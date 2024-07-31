@@ -26,8 +26,8 @@ export async function GET(req) {
   let renderData = null;
   // 获取请求数据  https://moyu-server.wangyitu.tech/api/proxy?url=https://tenapi.cn/v2/comment 
   // 发送 GET 请求
-  // await axios.get('https://moyu-server.wangyitu.tech/api/proxy?url=https://tenapi.cn/v2/comment')
-  await axios.get('https://tenapi.cn/v2/comment')
+  await axios.get('https://moyu-server.wangyitu.tech/api/proxy?url=https://tenapi.cn/v2/comment')
+  // await axios.get('https://tenapi.cn/v2/comment')
   .then(response => {
     renderData = response.data['apiData']['data'];
   })

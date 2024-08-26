@@ -4,6 +4,17 @@ import path from "path";
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
+  if(!searchParams.get("text")){
+    return new Response(JSON.stringify({ 
+        'card demo1':"/api/card?text=C%27est%20ça%2C%20la%20vie.%0A这就是人生%0ATime%20and%20Tide%0A朝露の儚さ%0A%0Ahttps%3A%2F%2Fcard.pomodiary.com&width=552"
+       ,'card2 demo1':"/api/card/card2"
+       ,'card3 demo1':"/api/card/card3?cover=https://p2.music.126.net/nNg4YjkcK1AwCX1FrN8VOQ==/109951166578333625.jpg&comment=我给她梳过头发，洗过澡，穿过衣服做过饭，亲她掉下来的眼泪，吃她剩下来的东西，她邹下眉头我都会紧张，我们吵过架，但是我都会放下所有的情绪去哄她，冬天冷了我会握住她的手，生病了我会喂她吃药，哄她睡觉，什么时候都是让着她，我很清楚一个女孩爱的样子。所以我依然很清楚的记得她背叛我的样子&name=Cheng橙zzzz&album=你走（完整版）"
+       ,'card3 demo2':"/api/card/card3?api=-"
+     }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
   const text = searchParams.get("text") || `C'est ça, la vie.
 这就是人生
 Time and Tide

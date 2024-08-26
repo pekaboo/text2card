@@ -37,7 +37,7 @@ export async function GET(req) {
   const api = searchParams.get("api") || "";
       // 注册字体
   registerFont(
-    path.join(process.cwd(), "public/fonts/arialbd.ttf"),
+    path.join(process.cwd(), "public/fonts/PingFang.ttc"),
     { family: "Arial" }
   );
   let renderData = null;

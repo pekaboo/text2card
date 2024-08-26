@@ -1,6 +1,8 @@
 // app/api/card/route.js
-import { createCanvas, Image } from "canvas";
+import { createCanvas, Image,registerFont } from "canvas";
+
 import axios from "axios";
+import path from "path";
 // 绕排文本函数
 function wrapText(context, text, x, y, maxWidth, lineHeight) {
   const words = text.split(" ");
@@ -33,7 +35,11 @@ export async function GET(req) {
   const album = searchParams.get("album") || "";
   const ignore = searchParams.get("ignore") || "";
   const api = searchParams.get("api") || "";
-
+      // 注册字体
+  registerFont(
+    path.join(process.cwd(), "public/fonts/arialbd.ttf"),
+    { family: "Arial" }
+  );
   let renderData = null;
   if (!cover || !comment || !name || !album) {
     if(!api){
@@ -157,6 +163,7 @@ export async function GET(req) {
     10 +
     // + ((commentTexts.length - 4) * 20)
     (120 + 140);
+
 
   const canvas = createCanvas(width, height);
   const ctx = canvas.getContext("2d");
